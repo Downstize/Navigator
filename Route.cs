@@ -16,20 +16,37 @@ public class Route
         IsFavorite = isFavorite;
         LocationPoints = locationPoints;
     }
-    
-    public override bool Equals(object o)
-    {
-        if (o == null || GetType() != o.GetType())
-        {
-            return false;
-        }
 
-        Route another = (Route)o;
-        return Id == another.Id;
+    public override bool Equals(object? obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+            return false;
+
+        Route other = (Route)obj;
+
+        return LocationPoints.First() == other.LocationPoints.First() &&
+               LocationPoints.Last() == other.LocationPoints.Last() &&
+               Math.Abs(Distance - other.Distance) < double.Epsilon;
     }
+
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        unchecked
+        {
+            int hash = 17;
+            hash = hash * 23 + Id.GetHashCode();
+            hash = hash * 23 + Distance.GetHashCode();
+            hash = hash * 23 + Popularity.GetHashCode();
+            hash = hash * 23 + IsFavorite.GetHashCode();
+
+            foreach (var point in LocationPoints)
+            {
+                hash = hash * 23 + point.GetHashCode();
+            }
+
+            return hash;
+        }
     }
+
 }

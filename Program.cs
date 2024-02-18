@@ -6,26 +6,77 @@
         {
             NavigatorImpl navigator = new NavigatorImpl();
 
-            InitializeRoutes(navigator);
+            InitRoutes(navigator);
 
-            DisplayTotalRoutes(navigator);
+            TypeRoutes(navigator);
+
+            CountAllRoutes(navigator);
 
             DisplayAllRoutes(navigator);
 
-            DisplayRouteById(navigator, "7");
+            FindRouteByValue(navigator, "3");
 
-            SearchAndDisplayRoutes(navigator, "Владивосток", "Чита");
+            SearchRoute(navigator, "Владивосток", "Чита");
 
             IncreaseRoutePopularity(navigator, "8");
 
-            DisplayTop3Routes(navigator);
+            DisplayTop5Routes(navigator);
 
             RemoveAndCheckRoute(navigator, "2");
 
             DisplayFavoriteRoutes(navigator, "Москва");
         }
 
-        static void InitializeRoutes(NavigatorImpl navigator)
+        static void TypeRoutes(NavigatorImpl navigator)
+        {
+            while (true)
+            {
+                Console.WriteLine("Укажите id для нового маршрута: ");
+                string id = Console.ReadLine();
+
+                Console.WriteLine("Укажите дистанцию: ");
+                double distance = double.Parse(Console.ReadLine());
+
+                Console.WriteLine("Популярность маршрута: ");
+                int popularity = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Маршрут является любимым? (да/нет): ");
+                string response = Console.ReadLine();
+                bool isFavourite;
+
+                if (response.ToLower() == "да")
+                {
+                    isFavourite = true;
+                }
+                else
+                {
+                    isFavourite = false;
+                }
+
+                Console.WriteLine("Введите точки останова находящиеся в маршруте: ");
+                List<string> locationPoints = new List<string>(Console.ReadLine().Split(","));
+
+                Route newRoute = new Route(id, distance, popularity, isFavourite, locationPoints);
+                if (!navigator.contains(newRoute))
+                {
+                    navigator.addRoute(newRoute);
+                    Console.WriteLine("Маршрут был успешно добавлен!");
+                }
+                else
+                {
+                    Console.WriteLine("Маршрут с такими атрибутами уже существует!");
+                }
+
+
+                Console.WriteLine("Хотите добавить ещё один маршрут? (да/нет): ");
+                string resp = Console.ReadLine();
+
+                if (resp.ToLower() != "да")
+                    break;
+            }
+        }
+
+        static void InitRoutes(NavigatorImpl navigator)
         {
             navigator.addRoute(new Route("1", 100.0, 5, true,
                 new List<string> { "Москва", "Тверь", "Санкт-Петербург" }));
@@ -49,34 +100,31 @@
                 new List<string> { "Уфа", "Оренбург", "Самара" }));
             navigator.addRoute(new Route("11", 800.0, 4, false,
                 new List<string> { "Мурманск", "Кандалакша", "Кемь", "Архангельск" }));
-            navigator.addRoute(new Route("12", 600.0, 5, true,
-                new List<string> { "Новгород", "Псков", "Рига", "Калининград" }));
-            navigator.addRoute(new Route("13", 400.0, 2, false,
-                new List<string> { "Волгоград", "Элиста", "Астрахань" }));
         }
 
-        static void DisplayTotalRoutes(NavigatorImpl navigator)
+        static void CountAllRoutes(NavigatorImpl navigator)
         {
             Console.WriteLine("--------------------");
-            Console.WriteLine($"Кол-во маршрутов: {navigator.size()}");
+            Console.WriteLine($"Кол-во маршрутов: {navigator.sizeAll()}");
         }
 
-        static void DisplayRouteById(NavigatorImpl navigator, string routeId)
+        static void FindRouteByValue(NavigatorImpl navigator, string routeId)
         {
             Route route = navigator.getRoute(routeId);
             if (route != null)
             {
-                Console.WriteLine($"Маршрут {route.Id}: Дистанция - {route.Distance}");
+                Console.WriteLine($"Маршрут {route.Id}: Дистанция - {route.Distance}, Популярность маршрута - {route.Popularity}, Города: {string.Join(",", route.LocationPoints)}");
                 Console.WriteLine("--------------------");
             }
             else
             {
-                Console.WriteLine($"Маршрут {routeId} не был найден!");
+                Console.WriteLine($"Маршрут с ID {routeId} не был найден!");
                 Console.WriteLine("--------------------");
             }
         }
 
-        static void SearchAndDisplayRoutes(NavigatorImpl navigator, string start, string end)
+
+        static void SearchRoute(NavigatorImpl navigator, string start, string end)
         {
             Console.WriteLine($"Маршурт из '{start}' в '{end}':");
             Console.WriteLine("---");
@@ -84,7 +132,7 @@
             bool routeFound = false;
             foreach (var r in navigator.searchRoutes(start, end))
             {
-                Console.WriteLine($"Маршрут {r.Id}: Дистанция - {r.Distance}, Популярность маршрута - {r.Popularity}, Города: {string.Join(",",r.LocationPoints)}");
+                Console.WriteLine($"Маршрут {r.Id}: Дистанция - {r.Distance}, Популярность маршрута - {r.Popularity}, Города: {string.Join(",", r.LocationPoints)}");
                 routeFound = true;
             }
 
@@ -95,13 +143,13 @@
 
             Console.WriteLine("--------------------");
         }
-        
+
         static void IncreaseRoutePopularity(NavigatorImpl navigator, string routeId)
         {
             navigator.chooseRoute(routeId);
         }
 
-        static void DisplayTop3Routes(NavigatorImpl navigator)
+        static void DisplayTop5Routes(NavigatorImpl navigator)
         {
             Console.WriteLine("5 самых популярных маршрутов:");
             Console.WriteLine("---");
@@ -115,14 +163,32 @@
 
         static void RemoveAndCheckRoute(NavigatorImpl navigator, string routeId)
         {
-            navigator.removeRoute(routeId);
-            Console.WriteLine($"Маршрут {routeId} существует? Ответ: {navigator.contains(new Route
-                (routeId, 0, 0, false, new List<string>()))}");
+            Route route = navigator.getRoute(routeId);
+
+            if (route != null)
+            {
+                Console.WriteLine($"Удаление маршрута №{routeId}");
+                navigator.removeRoute(route.Id);
+                Console.WriteLine("---");
+
+                route = navigator.getRoute(routeId);
+                Console.WriteLine($"Маршрут №{routeId} существует? Ответ: {(route != null ? "Да" : "Нет")}");
+                Console.WriteLine("--------------------");
+            }
+            else
+            {
+                Console.WriteLine($"Маршрут с ID {routeId} не найден!");
+            }
         }
 
-        static void DisplayFavoriteRoutes(NavigatorImpl navigator, string destination) ///
+
+
+
+
+        static void DisplayFavoriteRoutes(NavigatorImpl navigator, string destination)
         {
-            Console.WriteLine($"Любимые маршруты с пункотом '{destination}':");
+            Console.WriteLine($"Любимый(е) маршруты с пунктом '{destination}':");
+            Console.WriteLine("---");
             foreach (var r in navigator.getFavoriteRoutes(destination))
             {
                 Console.WriteLine($"Маршрут {r.Id}: Дистанция - {r.Distance}, Популярность маршрута - {r.Popularity}");
@@ -135,7 +201,7 @@
             Console.WriteLine("Все маршруты:");
             foreach (var r in navigator.getAllRoutes())
             {
-                Console.WriteLine($"Маршрут {r.Id}: Дистанция - {r.Distance}, Популярность маршрута - {r.Popularity}");
+                Console.WriteLine($"Маршрут {r.Id}: Дистанция - {r.Distance}, Популярность маршрута - {r.Popularity}, Города: {string.Join(",", r.LocationPoints)}");
             }
 
             Console.WriteLine("--------------------");

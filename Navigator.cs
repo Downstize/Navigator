@@ -8,7 +8,7 @@ public interface Navigator
 
     bool contains(Route route);
 
-    int size();
+    int sizeAll();
 
     Route getRoute(string routeId);
 
