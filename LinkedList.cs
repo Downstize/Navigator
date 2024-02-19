@@ -56,19 +56,19 @@ namespace Navigator
             return false;
         }
 
-       public Map Find(string key)
-{
-    var current = Head;
-    while (current != null)
-    {
-        if (current.Map.Key == key)
+        public Map Find(string key)
         {
-            return current.Map;
+            var current = Head;
+            while (current != null)
+            {
+                if (current.Map.Key == key)
+                {
+                    return current.Map;
+                }
+                current = current.Next;
+            }
+            return null;
         }
-        current = current.Next;
-    }
-    return null;
-}
         public IEnumerator<Map> GetEnumerator()
         {
             Node current = Head;
