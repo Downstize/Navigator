@@ -2,26 +2,14 @@ namespace Navigator
 {
     public class Navigator : INavigator
     {
-        public class Map
-        {
-            public string Key;
-            public Route Value;
-            public Map Next;
 
-            public Map(string key, Route value)
-            {
-                Key = key;
-                Value = value;
-                Next = null;
-            }
-        }
-
-        private Map[] map;
+        private LinkedList[] map;
+        LinkedList linkedList = new LinkedList();
         private int size;
 
         public Navigator()
         {
-            map = new Map[20];
+            map = new LinkedList[20];
         }
 
         private int GetIndex(string key)
@@ -39,28 +27,36 @@ namespace Navigator
             string routeId = route.Id.GetHashCode().ToString();
             int index = GetIndex(routeId);
 
-            var kvp = new Map(routeId, route)
+            if (map[index] == null)
             {
-                Next = map[index]
-            };
-            map[index] = kvp;
-            size++;
+                map[index] = new LinkedList();
+            }
 
-            if (size >= map.Length * 0.7)
+            Map existingMap = map[index].Find(routeId);
+            if (existingMap == null)
+            {
+                var kvp = new Map(routeId, route);
+                map[index].Add(kvp);
+                size++;
+            }
+
+            if (size >= map.Length * 0.75)
             {
                 var temp = map;
-                map = new Map[map.Length * 2];
-                foreach (var pair in temp)
+                map = new LinkedList[map.Length * 2];
+                foreach (var linkedList in temp.Where(linkedList => linkedList != null))
                 {
-                    var current = pair;
-                    while (current != null)
+                    foreach (var current in linkedList)
                     {
-                        index = GetIndex(current.Key);
-                        var next = current.Next;
-                        current.Next = map[index];
-                        map[index] = current;
-                        current = next;
+                        int innerIndex = GetIndex(current.Key);
+                        if (map[innerIndex] == null)
+                        {
+                            map[innerIndex] = new LinkedList();
+                        }
+                        map[innerIndex].Add(current);
                     }
+
+
                 }
             }
         }
@@ -75,40 +71,30 @@ namespace Navigator
             string hashedRouteId = routeId.GetHashCode().ToString();
             int index = GetIndex(hashedRouteId);
 
-            Map prev = null;
-            Map current = map[index];
-            while (current != null)
+            LinkedList linkedList = map[index];
+            if (linkedList != null)
             {
-                if (current.Key.Equals(hashedRouteId))
+                Map mapToRemove = linkedList.FirstOrDefault(item => item.Key.Equals(hashedRouteId));
+                if (mapToRemove != null)
                 {
-                    if (prev == null)
-                    {
-                        map[index] = current.Next;
-                    }
-                    else
-                    {
-                        prev.Next = current.Next;
-                    }
+                    linkedList.Remove(mapToRemove);
                     size--;
-                    return;
                 }
-                prev = current;
-                current = current.Next;
             }
         }
-
         public bool contains(Route route)
         {
-            foreach (Map kvp in map)
+            foreach (LinkedList linkedList in map)
             {
-                Map current = kvp;
-                while (current != null)
+                if (linkedList != null)
                 {
-                    if (current.Value.Equals(route))
+                    foreach (Map map in linkedList)
                     {
-                        return true;
+                        if (map.Value.Equals(route))
+                        {
+                            return true;
+                        }
                     }
-                    current = current.Next;
                 }
             }
             return false;
@@ -124,14 +110,14 @@ namespace Navigator
             string hashedRouteId = routeId.GetHashCode().ToString();
             int index = GetIndex(hashedRouteId);
 
-            Map current = map[index];
-            while (current != null)
+            LinkedList linkedList = map[index];
+            if (linkedList != null)
             {
-                if (current.Key.Equals(hashedRouteId))
+                Map mapToFind = linkedList.Find(hashedRouteId);
+                if (mapToFind != null)
                 {
-                    return current.Value;
+                    return mapToFind.Value;
                 }
-                current = current.Next;
             }
 
             return null;
@@ -142,27 +128,27 @@ namespace Navigator
             string hashedRouteId = routeId.GetHashCode().ToString();
             int index = GetIndex(hashedRouteId);
 
-            Map current = map[index];
-            while (current != null)
+            LinkedList linkedList = map[index];
+            if (linkedList != null)
             {
-                if (current.Key.Equals(hashedRouteId))
+                Map mapToFind = linkedList.Find(hashedRouteId);
+                if (mapToFind != null)
                 {
-                    current.Value.Popularity++;
-                    return;
+                    mapToFind.Value.Popularity++;
                 }
-                current = current.Next;
             }
         }
         public IEnumerable<Route> getAllRoutes()
         {
             List<Route> routesList = new List<Route>();
-            foreach (Map kvp in map)
+            foreach (LinkedList linkedList in map)
             {
-                Map current = kvp;
-                while (current != null)
+                if (linkedList != null)
                 {
-                    routesList.Add(current.Value);
-                    current = current.Next;
+                    foreach (Map map in linkedList)
+                    {
+                        routesList.Add(map.Value);
+                    }
                 }
             }
             return routesList;
