@@ -23,8 +23,8 @@
             DisplayTop5Routes(navigator);
 
             RemoveAndCheckRoute(navigator, "2");
-             DisplayAllRoutes(navigator);
 
+            DisplayAllRoutes(navigator);
 
             DisplayFavoriteRoutes(navigator, "Москва");
         }
