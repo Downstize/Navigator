@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            NavigatorImpl navigator = new NavigatorImpl();
+            Navigator navigator = new Navigator();
 
             InitRoutes(navigator);
 
@@ -27,7 +27,7 @@
             DisplayFavoriteRoutes(navigator, "Москва");
         }
 
-        static void TypeRoutes(NavigatorImpl navigator)
+        static void TypeRoutes(Navigator navigator)
         {
             while (true)
             {
@@ -76,7 +76,7 @@
             }
         }
 
-        static void InitRoutes(NavigatorImpl navigator)
+        static void InitRoutes(Navigator navigator)
         {
             navigator.addRoute(new Route("1", 100.0, 5, true,
                 new List<string> { "Москва", "Тверь", "Санкт-Петербург" }));
@@ -100,15 +100,17 @@
                 new List<string> { "Уфа", "Оренбург", "Самара" }));
             navigator.addRoute(new Route("11", 800.0, 4, false,
                 new List<string> { "Мурманск", "Кандалакша", "Кемь", "Архангельск" }));
+            navigator.addRoute(new Route("12", 200.0, 2, true,
+            new List<string> { "Владивосток", "Хабаровск", "Иркутск", "Чита" }));
         }
 
-        static void CountAllRoutes(NavigatorImpl navigator)
+        static void CountAllRoutes(Navigator navigator)
         {
             Console.WriteLine("--------------------");
             Console.WriteLine($"Кол-во маршрутов: {navigator.sizeAll()}");
         }
 
-        static void FindRouteByValue(NavigatorImpl navigator, string routeId)
+        static void FindRouteByValue(Navigator navigator, string routeId)
         {
             Route route = navigator.getRoute(routeId);
             if (route != null)
@@ -124,7 +126,7 @@
         }
 
 
-        static void SearchRoute(NavigatorImpl navigator, string start, string end)
+        static void SearchRoute(Navigator navigator, string start, string end)
         {
             Console.WriteLine($"Маршурт из '{start}' в '{end}':");
             Console.WriteLine("---");
@@ -144,12 +146,12 @@
             Console.WriteLine("--------------------");
         }
 
-        static void IncreaseRoutePopularity(NavigatorImpl navigator, string routeId)
+        static void IncreaseRoutePopularity(Navigator navigator, string routeId)
         {
             navigator.chooseRoute(routeId);
         }
 
-        static void DisplayTop5Routes(NavigatorImpl navigator)
+        static void DisplayTop5Routes(Navigator navigator)
         {
             Console.WriteLine("5 самых популярных маршрутов:");
             Console.WriteLine("---");
@@ -161,7 +163,7 @@
             Console.WriteLine("--------------------");
         }
 
-        static void RemoveAndCheckRoute(NavigatorImpl navigator, string routeId)
+        static void RemoveAndCheckRoute(Navigator navigator, string routeId)
         {
             Route route = navigator.getRoute(routeId);
 
@@ -185,7 +187,7 @@
 
 
 
-        static void DisplayFavoriteRoutes(NavigatorImpl navigator, string destination)
+        static void DisplayFavoriteRoutes(Navigator navigator, string destination)
         {
             Console.WriteLine($"Любимый(е) маршруты с пунктом '{destination}':");
             Console.WriteLine("---");
@@ -195,7 +197,7 @@
             }
         }
 
-        static void DisplayAllRoutes(NavigatorImpl navigator)
+        static void DisplayAllRoutes(Navigator navigator)
         {
             Console.WriteLine("--------------------");
             Console.WriteLine("Все маршруты:");
