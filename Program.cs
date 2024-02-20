@@ -104,6 +104,12 @@
                 new List<string> { "Мурманск", "Кандалакша", "Кемь", "Архангельск" }));
             navigator.addRoute(new Route("12", 200.0, 2, true,
             new List<string> { "Владивосток", "Хабаровск", "Иркутск", "Чита" }));
+            navigator.addRoute(new Route("13", 250.0, 3, true,
+            new List<string> { "Владивосток", "Красноярск", "Чита" }));
+            navigator.addRoute(new Route("14", 750.0, 7, true,
+                new List<string> { "Тбилиси", "Краснодар", "Москва", "Казань" }));
+            navigator.addRoute(new Route("15", 750.0, 9, true,
+            new List<string> { "Владивосток", "Санкт-Петербург", "Москва", "Тула" }));
         }
 
         static void CountAllRoutes(Navigator navigator)
@@ -130,7 +136,7 @@
 
         static void SearchRoute(Navigator navigator, string start, string end)
         {
-            Console.WriteLine($"Маршурт из '{start}' в '{end}':");
+            Console.WriteLine($"Маршрут(ы) из '{start}' в '{end}':");
             Console.WriteLine("---");
 
             bool routeFound = false;
@@ -159,7 +165,7 @@
             Console.WriteLine("---");
             foreach (var r in navigator.getTop5Routes())
             {
-                Console.WriteLine($"Маршрут {r.Id}: Популярность маршрута - {r.Popularity}, Дистанция - {r.Distance}");
+                Console.WriteLine($"Маршрут {r.Id}: Популярность маршрута - {r.Popularity}, Дистанция - {r.Distance}, Кол-во остановок - {r.LocationPoints.Count}");
             }
 
             Console.WriteLine("--------------------");

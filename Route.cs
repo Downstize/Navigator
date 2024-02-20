@@ -34,15 +34,16 @@ public class Route
     {
         unchecked
         {
-            int hash = 17;
-            hash = hash * 23 + Id.GetHashCode();
-            hash = hash * 23 + Distance.GetHashCode();
-            hash = hash * 23 + Popularity.GetHashCode();
-            hash = hash * 23 + IsFavorite.GetHashCode();
+            int somePrimeNumber = 8;
+            int hash = 22;
+            hash = somePrimeNumber * hash * 22 + Id.GetHashCode();
+            hash = somePrimeNumber * hash * 22 + Distance.GetHashCode();
+            hash = somePrimeNumber * hash * 22 + Popularity.GetHashCode();
+            hash = somePrimeNumber * hash * 22 + IsFavorite.GetHashCode();
 
             foreach (var point in LocationPoints)
             {
-                hash = hash * 23 + point.GetHashCode();
+                hash = somePrimeNumber * hash * 22 + point.GetHashCode();
             }
 
             return hash;
